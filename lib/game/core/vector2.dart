@@ -17,10 +17,8 @@ class Vector2 {
 
   Vector2 scale(double factor) => Vector2(x * factor, y * factor);
 
-  Vector2 clamp(double min, double max) => Vector2(
-        _clampComponent(x, min, max),
-        _clampComponent(y, min, max),
-      );
+  Vector2 clamp(double min, double max) =>
+      Vector2(_clampComponent(x, min, max), _clampComponent(y, min, max));
 
   double distanceTo(Vector2 other) {
     final dx = x - other.x;

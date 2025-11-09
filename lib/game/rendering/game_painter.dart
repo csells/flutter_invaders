@@ -89,11 +89,7 @@ class GamePainter extends CustomPainter {
   void _drawShields(Canvas canvas) {
     for (final shield in state.shields) {
       if (shield.isDestroyed) continue;
-      final opacity = ui.clampDouble(
-        1 - (shield.state.index * 0.25),
-        0.2,
-        1,
-      );
+      final opacity = ui.clampDouble(1 - (shield.state.index * 0.25), 0.2, 1);
       final paint = Paint()..color = _shieldColor.withValues(alpha: opacity);
       final rect = Rect.fromLTWH(
         shield.position.x,

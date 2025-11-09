@@ -103,53 +103,38 @@ class GameViewState extends State<GameView>
 
   @override
   Widget build(BuildContext context) => Focus(
-    focusNode: _focusNode,
-    autofocus: true,
-    onKeyEvent: _handleKey,
-    child: LayoutBuilder(
-      builder: (context, constraints) {
-        final scale = _computeScale(constraints.biggest);
-        const logicalSize = Size(
-          GameDimensions.playfieldWidth,
-          GameDimensions.playfieldHeight,
-        );
-        final scaledWidth = logicalSize.width * scale;
-        final scaledHeight = logicalSize.height * scale;
-
-        return Container(
-          color: Colors.black,
-          alignment: Alignment.center,
-          child: SizedBox(
-            key: const Key('game-canvas'),
-            width: scaledWidth,
-            height: scaledHeight,
-            child: ClipRect(
-              child: Transform.scale(
-                alignment: Alignment.topLeft,
-                scale: scale,
-                filterQuality: FilterQuality.none,
-                child: SizedBox(
-                  width: logicalSize.width,
-                  height: logicalSize.height,
-                  child: _GameScene(state: _controller.state),
+        focusNode: _focusNode,
+        autofocus: true,
+        onKeyEvent: _handleKey,
+        child: SizedBox.expand(
+          child: Container(
+            color: Colors.black,
+            alignment: Alignment.center,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: SizedBox(
+                key: const Key('game-canvas'),
+                width: GameDimensions.playfieldWidth,
+                height: GameDimensions.playfieldHeight,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _GameCanvas(state: _controller.state),
+                    if (_controller.state.currentScreen == GameScreen.title)
+                      const _TitleScene(),
+                    if (_controller.state.currentScreen == GameScreen.gameOver)
+                      _GameOverScene(score: _controller.state.score),
+                  ],
                 ),
               ),
             ),
           ),
-        );
-      },
-    ),
-  );
-
-  double _computeScale(Size viewport) {
-    final widthScale = viewport.width / GameDimensions.playfieldWidth;
-    final heightScale = viewport.height / GameDimensions.playfieldHeight;
-    return widthScale < heightScale ? widthScale : heightScale;
-  }
+        ),
+      );
 }
 
-class _GameScene extends StatelessWidget {
-  const _GameScene({required this.state});
+class _GameCanvas extends StatelessWidget {
+  const _GameCanvas({required this.state});
 
   final GameState state;
 
@@ -162,13 +147,10 @@ class _GameScene extends StatelessWidget {
         isComplex: true,
         willChange: true,
       ),
-      if (state.currentScreen == GameScreen.playing)
-        _Hud(score: state.score, lives: state.player.lives),
-      if (state.currentScreen == GameScreen.title) const _TitleOverlay(),
-      if (state.currentScreen == GameScreen.gameOver)
-        _GameOverOverlay(score: state.score),
-    ],
-  );
+          if (state.currentScreen == GameScreen.playing)
+            _Hud(score: state.score, lives: state.player.lives),
+        ],
+      );
 }
 
 class _Hud extends StatelessWidget {
@@ -216,67 +198,108 @@ class _Hud extends StatelessWidget {
   );
 }
 
-class _TitleOverlay extends StatelessWidget {
-  const _TitleOverlay();
+class _TitleScene extends StatelessWidget {
+  const _TitleScene();
 
   @override
-  Widget build(BuildContext context) => ColoredBox(
-    color: Colors.black.withValues(alpha: 0.6),
-    child: const Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'SPACE INVADERS',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+  Widget build(BuildContext context) => const ColoredBox(
+    color: Colors.black,
+    child: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'SPACE INVADERS',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
+            textAlign: TextAlign.center,
           ),
-        ),
-        SizedBox(height: 16),
-        Text(
-          'PRESS SPACE TO START',
-          style: TextStyle(color: Colors.greenAccent, fontSize: 12),
-        ),
-        SizedBox(height: 24),
-        Text('CONTROLS:', style: TextStyle(color: Colors.grey, fontSize: 10)),
-        Text('← → MOVE', style: TextStyle(color: Colors.grey, fontSize: 10)),
-        Text('SPACE FIRE', style: TextStyle(color: Colors.grey, fontSize: 10)),
-      ],
+          SizedBox(height: 20),
+          Text(
+            'PRESS SPACE TO START',
+            style: TextStyle(
+              color: Colors.greenAccent,
+              fontSize: 12,
+              letterSpacing: 1,
+            ),
+          ),
+          SizedBox(height: 32),
+          Text(
+            'CONTROLS:',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 10,
+              letterSpacing: 1,
+            ),
+          ),
+          SizedBox(height: 6),
+          Text(
+            '← → MOVE',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 10,
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            'SPACE FIRE',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 10,
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
 
-class _GameOverOverlay extends StatelessWidget {
-  const _GameOverOverlay({required this.score});
+class _GameOverScene extends StatelessWidget {
+  const _GameOverScene({required this.score});
 
   final int score;
 
   @override
   Widget build(BuildContext context) => ColoredBox(
-    color: Colors.black.withValues(alpha: 0.7),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'GAME OVER',
-          style: TextStyle(
-            color: Colors.redAccent,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+    color: Colors.black,
+    child: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'GAME OVER',
+            style: TextStyle(
+              color: Colors.redAccent,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'FINAL SCORE: ${score.toString().padLeft(4, '0')}',
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          'PRESS SPACE TO RESTART',
-          style: TextStyle(color: Colors.greenAccent, fontSize: 12),
-        ),
-      ],
+          const SizedBox(height: 20),
+          Text(
+            'FINAL SCORE: ${score.toString().padLeft(4, '0')}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              letterSpacing: 1,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'PRESS SPACE TO RESTART',
+            style: TextStyle(
+              color: Colors.greenAccent,
+              fontSize: 12,
+              letterSpacing: 1,
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

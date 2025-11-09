@@ -9,7 +9,7 @@ import 'input_state.dart';
 
 class GameController extends ChangeNotifier {
   GameController({required TickerProvider tickerProvider})
-      : state = GameState() {
+    : state = GameState() {
     _ticker = tickerProvider.createTicker(_handleTick);
     unawaited(_ticker.start());
   }

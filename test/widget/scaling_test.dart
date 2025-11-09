@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_invaders/game/constants.dart';
 import 'package:flutter_invaders/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -21,8 +22,8 @@ void main() {
     final canvasBox = tester.renderObject<RenderBox>(
       find.byKey(const Key('game-canvas')),
     );
-    expect(canvasBox.size.height, closeTo(400, 0.1));
-    expect(canvasBox.size.width, lessThan(800));
+    expect(canvasBox.size.width, GameDimensions.playfieldWidth);
+    expect(canvasBox.size.height, GameDimensions.playfieldHeight);
   });
 
   testWidgets('tall viewport letterboxes vertically', (tester) async {
@@ -41,7 +42,7 @@ void main() {
     final canvasBox = tester.renderObject<RenderBox>(
       find.byKey(const Key('game-canvas')),
     );
-    expect(canvasBox.size.width, closeTo(400, 0.1));
-    expect(canvasBox.size.height, lessThan(900));
+    expect(canvasBox.size.width, GameDimensions.playfieldWidth);
+    expect(canvasBox.size.height, GameDimensions.playfieldHeight);
   });
 }

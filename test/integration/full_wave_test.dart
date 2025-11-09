@@ -5,9 +5,7 @@ void main() {
   test('clearing a wave spawns a new one and increments wave number', () {
     final state = GameState();
     state.currentScreen = GameScreen.playing;
-    state.aliens.activeAliens
-        .toList()
-        .forEach(state.registerAlienHit);
+    state.aliens.activeAliens.toList().forEach(state.registerAlienHit);
 
     state.stepFrame();
 

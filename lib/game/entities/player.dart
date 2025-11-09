@@ -7,15 +7,15 @@ import 'game_object.dart';
 
 class Player extends GameObject {
   Player()
-      : lives = PlayerConfig.startingLives,
-        speed = PlayerConfig.speed,
-        super(
-          position: const Vector2(
-            (GameDimensions.playfieldWidth - 14) / 2,
-            GameDimensions.playerY,
-          ),
-          size: const Vector2(14, 8),
-        );
+    : lives = PlayerConfig.startingLives,
+      speed = PlayerConfig.speed,
+      super(
+        position: const Vector2(
+          (GameDimensions.playfieldWidth - 14) / 2,
+          GameDimensions.playerY,
+        ),
+        size: const Vector2(14, 8),
+      );
 
   int lives;
   final double speed;

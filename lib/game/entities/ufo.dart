@@ -3,8 +3,8 @@ import 'game_object.dart';
 
 class Ufo extends GameObject {
   Ufo()
-      : isVisible = false,
-        super(position: const Vector2(-20, 32), size: const Vector2(16, 8));
+    : isVisible = false,
+      super(position: const Vector2(-20, 32), size: const Vector2(16, 8));
 
   bool isVisible;
   int shotCounter = 0;
