@@ -107,9 +107,8 @@ class GameViewState extends State<GameView>
         autofocus: true,
         onKeyEvent: _handleKey,
         child: SizedBox.expand(
-          child: Container(
+          child: ColoredBox(
             color: Colors.black,
-            alignment: Alignment.center,
             child: FittedBox(
               fit: BoxFit.contain,
               child: SizedBox(

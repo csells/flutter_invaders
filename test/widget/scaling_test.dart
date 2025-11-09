@@ -45,4 +45,30 @@ void main() {
     expect(canvasBox.size.width, GameDimensions.playfieldWidth);
     expect(canvasBox.size.height, GameDimensions.playfieldHeight);
   });
+
+  testWidgets('FittedBox scales up to fill large viewport', (tester) async {
+    final view = tester.view;
+    addTearDown(() {
+      view.resetPhysicalSize();
+      view.resetDevicePixelRatio();
+    });
+
+    view.physicalSize = const Size(800, 600);
+    view.devicePixelRatio = 1;
+
+    await tester.pumpWidget(const SpaceInvadersApp());
+    await tester.pump();
+
+    final fittedBox = tester.renderObject<RenderBox>(
+      find.byType(FittedBox),
+    );
+    expect(fittedBox.size.width, 800);
+    expect(fittedBox.size.height, 600);
+
+    final canvasBox = tester.renderObject<RenderBox>(
+      find.byKey(const Key('game-canvas')),
+    );
+    expect(canvasBox.size.width, GameDimensions.playfieldWidth);
+    expect(canvasBox.size.height, GameDimensions.playfieldHeight);
+  });
 }
